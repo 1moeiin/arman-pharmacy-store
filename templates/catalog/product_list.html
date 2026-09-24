@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block nav_products_current %}aria-current="page"{% endblock %}
+{% block content %}
+  <div class="container section">
+    <nav class="breadcrumbs" aria-label="مسیر صفحه">
+      <a href="{% url 'core:home' %}">خانه</a> / <span>محصولات</span>
+    </nav>
+    <div class="section-head">
+      <h1 class="reveal">همه محصولات</h1>
+      <form method="get" class="form-field" style="margin:0;">
+        <label for="sort" class="visually-hidden">مرتب‌سازی</label>
+        <select id="sort" name="sort" onchange="this.form.submit()">
+          <option value="">جدیدترین</option>
+          <option value="price_asc" {% if request.GET.sort == "price_asc" %}selected{% endif %}>ارزان‌ترین</option>
+          <option value="price_desc" {% if request.GET.sort == "price_desc" %}selected{% endif %}>گران‌ترین</option>
+        </select>
+      </form>
+    </div>
+
+    {% if page_obj.object_list %}
+      <div class="grid">
+        {% for product in page_obj %}
+          {% include "partials/product_card.html" %}
+        {% endfor %}
+      </div>
+      {% include "partials/pagination.html" %}
+    {% else %}
+      <div class="empty-state"><p>در حال حاضر محصولی برای نمایش وجود ندارد.</p></div>
+    {% endif %}
+  </div>
+{% endblock %}

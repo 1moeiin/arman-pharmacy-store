@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container error-page">
+    <span class="code">۴۰۴</span>
+    <h1>صفحه مورد نظر پیدا نشد</h1>
+    <p>ممکن است آدرس اشتباه باشد یا صفحه حذف شده باشد.</p>
+    <a href="{% url 'core:home' %}" class="btn btn-primary">بازگشت به صفحه اصلی</a>
+  </div>
+{% endblock %}

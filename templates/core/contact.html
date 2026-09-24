@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% block nav_contact_current %}aria-current="page"{% endblock %}
+{% block content %}
+  <div class="container section">
+    <nav class="breadcrumbs" aria-label="مسیر صفحه">
+      <a href="{% url 'core:home' %}">خانه</a> / <span>تماس با ما</span>
+    </nav>
+    <h1 class="reveal">تماس با ما</h1>
+    <div class="hero-grid" style="align-items:flex-start; gap: var(--space-8);">
+      <form method="post" class="card reveal" novalidate>
+        {% csrf_token %}
+        {% for field in form %}
+          <div class="form-field">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}<div class="form-errors">{{ field.errors|striptags }}</div>{% endif %}
+          </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary btn-block">ارسال پیام</button>
+      </form>
+      <div class="card reveal">
+        <h3>اطلاعات تماس</h3>
+        <ul>
+          {% if site_settings.phone_number %}<li>📞 {{ site_settings.phone_number }}</li>{% endif %}
+          {% if site_settings.email %}<li>✉️ {{ site_settings.email }}</li>{% endif %}
+          {% if site_settings.address %}<li>📍 {{ site_settings.address }}</li>{% endif %}
+        </ul>
+      </div>
+    </div>
+  </div>
+{% endblock %}

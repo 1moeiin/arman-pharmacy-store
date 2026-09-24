@@ -1,0 +1,139 @@
+{% load static csp %}<!DOCTYPE html>
+<html lang="fa" dir="rtl" class="no-js">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{% if meta_title %}{{ meta_title }} | {{ SITE_NAME }}{% else %}{{ SITE_NAME }} | فروشگاه آنلاین دارو و محصولات سلامت{% endif %}{% endblock %}</title>
+  <meta name="description" content="{% block meta_description %}{{ meta_description|default:site_settings.default_meta_description }}{% endblock %}">
+  {% if noindex %}
+    <meta name="robots" content="noindex,follow">
+  {% else %}
+    <meta name="robots" content="index,follow">
+  {% endif %}
+  <link rel="canonical" href="{% block canonical %}{{ CANONICAL_URL }}{% endblock %}">
+  {% if site_settings.google_site_verification %}
+    <meta name="google-site-verification" content="{{ site_settings.google_site_verification }}">
+  {% endif %}
+
+  <meta property="og:site_name" content="{{ SITE_NAME }}">
+  <meta property="og:type" content="{% block og_type %}website{% endblock %}">
+  <meta property="og:title" content="{% block og_title %}{{ meta_title|default:SITE_NAME }}{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}{{ meta_description|default:site_settings.default_meta_description }}{% endblock %}">
+  <meta property="og:url" content="{{ CANONICAL_URL }}">
+  <meta property="og:locale" content="fa_IR">
+  {% block og_image %}{% if site_settings.og_image %}<meta property="og:image" content="{{ SITE_BASE_URL }}{{ site_settings.og_image.url }}">{% endif %}{% endblock %}
+
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="{{ meta_title|default:SITE_NAME }}">
+  <meta name="twitter:description" content="{{ meta_description|default:site_settings.default_meta_description }}">
+
+  <link rel="icon" href="{% static 'img/favicon.svg' %}" type="image/svg+xml">
+  <link rel="preload" href="{% static 'fonts/Vazirmatn-Regular.woff2' %}" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="{% static 'css/main.css' %}">
+
+  {% script %}
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "{{ SITE_NAME|escapejs }}",
+    "url": "{{ SITE_BASE_URL }}",
+    {% if site_settings.phone_number %}"telephone": "{{ site_settings.phone_number|escapejs }}",{% endif %}
+    {% if site_settings.address %}"address": "{{ site_settings.address|escapejs }}",{% endif %}
+    "sameAs": [
+      {% if site_settings.instagram_url %}"{{ site_settings.instagram_url|escapejs }}"{% endif %}
+    ]
+  }
+  {% endscript %}
+  {% block json_ld %}{% endblock %}
+  {% block extra_head %}{% endblock %}
+</head>
+<body>
+  <a class="skip-link" href="#main-content">رفتن به محتوای اصلی</a>
+
+  <header class="site-header">
+    <div class="container header-bar">
+      <a href="{% url 'core:home' %}" class="brand">
+        <span class="brand-badge" aria-hidden="true">آ</span>
+        <span>{{ SITE_NAME }}</span>
+      </a>
+
+      <nav class="main-nav" aria-label="منوی اصلی">
+        <a href="{% url 'core:home' %}" {% block nav_home_current %}{% endblock %}>خانه</a>
+        <a href="{% url 'catalog:product_list' %}" {% block nav_products_current %}{% endblock %}>محصولات</a>
+        <a href="{% url 'core:about' %}" {% block nav_about_current %}{% endblock %}>درباره ما</a>
+        <a href="{% url 'core:contact' %}" {% block nav_contact_current %}{% endblock %}>تماس با ما</a>
+      </nav>
+
+      <form class="search-form" action="{% url 'core:search' %}" method="get" role="search">
+        <label for="site-search" class="visually-hidden">جستجوی محصول</label>
+        <input id="site-search" type="search" name="q" placeholder="جستجوی دارو، برند یا دسته…" value="{{ query|default:'' }}" autocomplete="off">
+      </form>
+
+      <div class="header-actions">
+        <a href="{% url 'orders:cart_detail' %}" class="icon-link" aria-label="سبد خرید">
+          🛒
+          <span class="cart-badge" {% if not cart|length %}hidden{% endif %}>{{ cart|length }}</span>
+        </a>
+        {% if user.is_authenticated %}
+          <a href="{% url 'accounts:profile' %}" class="icon-link" aria-label="حساب کاربری">👤</a>
+        {% else %}
+          <a href="{% url 'accounts:login' %}" class="btn btn-outline btn-sm">ورود / ثبت‌نام</a>
+        {% endif %}
+        <button type="button" class="icon-link menu-toggle" aria-label="باز کردن منو" aria-expanded="false">☰</button>
+      </div>
+    </div>
+  </header>
+
+  {% if messages %}
+    <div class="toast-region" role="status" aria-live="polite">
+      {% for message in messages %}
+        <div class="toast {{ message.tags }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+
+  <main id="main-content">
+    {% block breadcrumbs %}{% endblock %}
+    {% block content %}{% endblock %}
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-grid">
+      <div>
+        <h3>{{ SITE_NAME }}</h3>
+        <p>ارائه‌دهنده داروها و محصولات سلامت و زیبایی با تضمین اصالت کالا و مشاوره داروسازی رایگان.</p>
+      </div>
+      <div>
+        <h3>دسترسی سریع</h3>
+        <ul>
+          <li><a href="{% url 'catalog:product_list' %}">همه محصولات</a></li>
+          <li><a href="{% url 'core:about' %}">درباره ما</a></li>
+          <li><a href="{% url 'core:contact' %}">تماس با ما</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>حساب کاربری</h3>
+        <ul>
+          <li><a href="{% url 'accounts:login' %}">ورود</a></li>
+          <li><a href="{% url 'accounts:register' %}">ثبت‌نام</a></li>
+          <li><a href="{% url 'orders:order_list' %}">سفارش‌های من</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>تماس با ما</h3>
+        <ul>
+          {% if site_settings.phone_number %}<li>{{ site_settings.phone_number }}</li>{% endif %}
+          {% if site_settings.email %}<li>{{ site_settings.email }}</li>{% endif %}
+          {% if site_settings.address %}<li>{{ site_settings.address }}</li>{% endif %}
+        </ul>
+      </div>
+    </div>
+    <div class="container footer-bottom">
+      &copy; {% now "Y" %} {{ SITE_NAME }} — تمامی حقوق محفوظ است.
+    </div>
+  </footer>
+
+  <script src="{% static 'js/main.js' %}" defer></script>
+  {% block extra_js %}{% endblock %}
+</body>
+</html>

@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container section">
+    <nav class="breadcrumbs" aria-label="مسیر صفحه">
+      <a href="{% url 'core:home' %}">خانه</a> / <span>جستجو</span>
+    </nav>
+    <h1 class="reveal">{% if query %}نتایج جستجو برای «{{ query }}»{% else %}جستجوی محصولات{% endif %}</h1>
+
+    {% if query and not page_obj.object_list %}
+      <div class="empty-state">
+        <p>نتیجه‌ای برای «{{ query }}» یافت نشد.</p>
+        <a href="{% url 'catalog:product_list' %}" class="btn btn-primary">مشاهده همه محصولات</a>
+      </div>
+    {% elif page_obj.object_list %}
+      <div class="grid">
+        {% for product in page_obj %}
+          {% include "partials/product_card.html" %}
+        {% endfor %}
+      </div>
+      {% include "partials/pagination.html" %}
+    {% endif %}
+  </div>
+{% endblock %}

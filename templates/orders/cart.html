@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% load static %}
+{% block content %}
+  <div class="container section">
+    <h1 class="reveal">سبد خرید</h1>
+    {% if cart.is_empty %}
+      <div class="empty-state">
+        <p>سبد خرید شما خالی است.</p>
+        <a href="{% url 'catalog:product_list' %}" class="btn btn-primary">مشاهده محصولات</a>
+      </div>
+    {% else %}
+      <div class="hero-grid" style="align-items:flex-start; gap: var(--space-8);">
+        <div class="card reveal">
+          {% for entry in cart %}
+            <div class="cart-line" data-cart-line>
+              {% with image=entry.product.primary_image %}
+                <img src="{% if image %}{{ image.image.url }}{% else %}{% static 'img/placeholder-product.svg' %}{% endif %}" alt="{{ entry.product.name }}" width="80" height="80" loading="lazy">
+              {% endwith %}
+              <div>
+                <strong>{{ entry.product.name }}</strong>
+                <p style="margin:0;color:var(--color-text-muted)">{{ entry.product.price|floatformat:0 }} تومان × {{ entry.quantity }}</p>
+              </div>
+              <form method="post" action="{% url 'orders:cart_update' entry.product.id %}" data-cart-action="update" data-success-message="تعداد به‌روزرسانی شد.">
+                {% csrf_token %}
+                <div class="quantity-stepper">
+                  <button type="button" data-step="down" aria-label="کاهش">−</button>
+                  <input type="number" name="quantity" value="{{ entry.quantity }}" min="1" max="{{ entry.product.stock }}" onchange="this.form.requestSubmit()">
+                  <button type="button" data-step="up" aria-label="افزایش">+</button>
+                </div>
+              </form>
+              <form method="post" action="{% url 'orders:cart_remove' entry.product.id %}" data-cart-action="remove" data-success-message="محصول حذف شد.">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-sm btn-outline">حذف</button>
+              </form>
+            </div>
+          {% endfor %}
+        </div>
+
+        <aside class="card cart-summary reveal">
+          <h2>خلاصه سفارش</h2>
+          <div class="summary-row"><span>جمع کل کالاها</span><span>{{ cart.subtotal|floatformat:0 }} تومان</span></div>
+          {% if cart.requires_prescription %}
+            <p style="font-size:0.85rem;color:var(--color-warning-500)">⚠ سبد خرید شما شامل داروی نیازمند نسخه است.</p>
+          {% endif %}
+          <a href="{% url 'orders:checkout' %}" class="btn btn-primary btn-block">ادامه فرایند خرید</a>
+        </aside>
+      </div>
+    {% endif %}
+  </div>
+{% endblock %}

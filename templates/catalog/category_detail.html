@@ -1,0 +1,37 @@
+{% extends "base.html" %}
+{% load csp %}
+{% block nav_products_current %}aria-current="page"{% endblock %}
+
+{% block json_ld %}
+{% script %}
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "خانه", "item": "{{ SITE_BASE_URL }}"},
+    {"@type": "ListItem", "position": 2, "name": "{{ category.name|escapejs }}", "item": "{{ CANONICAL_URL }}"}
+  ]
+}
+{% endscript %}
+{% endblock %}
+
+{% block content %}
+  <div class="container section">
+    <nav class="breadcrumbs" aria-label="مسیر صفحه">
+      <a href="{% url 'core:home' %}">خانه</a> / <a href="{% url 'catalog:product_list' %}">محصولات</a> / <span>{{ category.name }}</span>
+    </nav>
+    <h1 class="reveal">{{ category.name }}</h1>
+    {% if category.description %}<p class="reveal">{{ category.description }}</p>{% endif %}
+
+    {% if page_obj.object_list %}
+      <div class="grid">
+        {% for product in page_obj %}
+          {% include "partials/product_card.html" %}
+        {% endfor %}
+      </div>
+      {% include "partials/pagination.html" %}
+    {% else %}
+      <div class="empty-state"><p>محصولی در این دسته‌بندی یافت نشد.</p></div>
+    {% endif %}
+  </div>
+{% endblock %}

@@ -1,0 +1,9 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container error-page">
+    <div style="font-size:4rem;">✅</div>
+    <h1>پرداخت با موفقیت انجام شد</h1>
+    <p>کد پیگیری: {{ ref_id }}</p>
+    <a href="{% url 'orders:order_detail' order.pk %}" class="btn btn-primary">مشاهده سفارش</a>
+  </div>
+{% endblock %}

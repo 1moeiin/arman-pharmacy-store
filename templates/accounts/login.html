@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container section" style="max-width:480px;">
+    <h1 class="reveal">ورود به حساب کاربری</h1>
+    <form method="post" class="card reveal" novalidate>
+      {% csrf_token %}
+      {% for field in form %}
+        <div class="form-field">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }}
+          {% if field.errors %}<div class="form-errors">{{ field.errors|striptags }}</div>{% endif %}
+        </div>
+      {% endfor %}
+      {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors|striptags }}</div>{% endif %}
+      <button type="submit" class="btn btn-primary btn-block">ورود</button>
+    </form>
+    <p class="reveal">حساب کاربری ندارید؟ <a href="{% url 'accounts:register' %}">ثبت‌نام کنید</a></p>
+  </div>
+{% endblock %}

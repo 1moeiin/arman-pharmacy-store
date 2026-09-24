@@ -1,0 +1,10 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container error-page">
+    <div style="font-size:4rem;">❌</div>
+    <h1>پرداخت ناموفق بود</h1>
+    <p>مبلغی از حساب شما کسر نشده است. می‌توانید دوباره تلاش کنید.</p>
+    <a href="{% url 'payments:request_payment' order.pk %}" class="btn btn-primary">تلاش مجدد</a>
+    <a href="{% url 'orders:order_detail' order.pk %}" class="btn btn-outline">مشاهده سفارش</a>
+  </div>
+{% endblock %}

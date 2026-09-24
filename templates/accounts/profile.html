@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container section">
+    <h1 class="reveal">حساب کاربری من</h1>
+    <div class="hero-grid" style="align-items:flex-start; gap: var(--space-8);">
+      <form method="post" class="card reveal">
+        {% csrf_token %}
+        <h2>اطلاعات شخصی</h2>
+        {% for field in form %}
+          <div class="form-field">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.errors %}<div class="form-errors">{{ field.errors|striptags }}</div>{% endif %}
+          </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary">ذخیره تغییرات</button>
+      </form>
+
+      <div class="card reveal">
+        <div class="section-head" style="margin-bottom: var(--space-4);">
+          <h2 style="margin:0;">آدرس‌های من</h2>
+          <a href="{% url 'accounts:address_create' %}" class="btn btn-sm btn-outline">+ آدرس جدید</a>
+        </div>
+        {% if addresses %}
+          {% for address in addresses %}
+            <div style="padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border);">
+              <strong>{{ address.title }}</strong>{% if address.is_default %} <span class="badge" style="position:static; display:inline-block;">پیش‌فرض</span>{% endif %}
+              <p style="margin: var(--space-1) 0 0;">{{ address.receiver_full_name }} — {{ address.city }}، {{ address.full_address }}</p>
+              <div style="display:flex; gap: var(--space-2); margin-top: var(--space-2);">
+                <a href="{% url 'accounts:address_edit' address.pk %}" class="btn btn-sm btn-outline">ویرایش</a>
+                <form method="post" action="{% url 'accounts:address_delete' address.pk %}">
+                  {% csrf_token %}
+                  <button type="submit" class="btn btn-sm btn-outline">حذف</button>
+                </form>
+              </div>
+            </div>
+          {% endfor %}
+        {% else %}
+          <p>هنوز آدرسی ثبت نکرده‌اید.</p>
+        {% endif %}
+      </div>
+    </div>
+
+    <div class="card reveal" style="margin-top: var(--space-6);">
+      <div class="section-head" style="margin-bottom:0;">
+        <h2 style="margin:0;">سفارش‌های اخیر</h2>
+        <a href="{% url 'orders:order_list' %}" class="btn btn-ghost">مشاهده همه ←</a>
+      </div>
+    </div>
+  </div>
+{% endblock %}

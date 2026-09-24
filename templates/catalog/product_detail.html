@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+{% load static csp %}
+
+{% block og_type %}product{% endblock %}
+{% block og_image %}
+  {% with image=product.primary_image %}
+    {% if image %}<meta property="og:image" content="{{ SITE_BASE_URL }}{{ image.image.url }}">{% endif %}
+  {% endwith %}
+{% endblock %}
+
+{% block json_ld %}
+{% script %}
+{
+  "@context": "https://schema.org",
+  "@type": "Product",
+  "name": "{{ product.name|escapejs }}",
+  "description": "{{ product.seo_description|escapejs }}",
+  "sku": "{{ product.sku|escapejs }}",
+  {% if product.brand %}"brand": {"@type": "Brand", "name": "{{ product.brand.name|escapejs }}"},{% endif %}
+  {% with image=product.primary_image %}{% if image %}"image": ["{{ SITE_BASE_URL }}{{ image.image.url }}"],{% endif %}{% endwith %}
+  "offers": {
+    "@type": "Offer",
+    "priceCurrency": "IRR",
+    "price": "{{ product.price_in_rials|floatformat:0 }}",
+    "availability": "{% if product.in_stock %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}",
+    "url": "{{ CANONICAL_URL }}"
+  }
+}
+{% endscript %}
+{% script %}
+{
+  "@context": "https://schema.org",
+  "@type": "BreadcrumbList",
+  "itemListElement": [
+    {"@type": "ListItem", "position": 1, "name": "خانه", "item": "{{ SITE_BASE_URL }}"},
+    {"@type": "ListItem", "position": 2, "name": "{{ product.category.name|escapejs }}", "item": "{{ SITE_BASE_URL }}{{ product.category.get_absolute_url }}"},
+    {"@type": "ListItem", "position": 3, "name": "{{ product.name|escapejs }}", "item": "{{ CANONICAL_URL }}"}
+  ]
+}
+{% endscript %}
+{% endblock %}
+
+{% block nav_products_current %}aria-current="page"{% endblock %}
+
+{% block content %}
+  <div class="container section">
+    <nav class="breadcrumbs" aria-label="مسیر صفحه">
+      <a href="{% url 'core:home' %}">خانه</a> /
+      <a href="{% url 'catalog:product_list' %}">محصولات</a> /
+      <a href="{{ product.category.get_absolute_url }}">{{ product.category.name }}</a> /
+      <span>{{ product.name }}</span>
+    </nav>
+
+    <div class="product-detail-grid">
+      <div class="reveal">
+        <div class="product-gallery-main">
+          {% with image=product.primary_image %}
+            <img data-gallery-main src="{% if image %}{{ image.image.url }}{% else %}{% static 'img/placeholder-product.svg' %}{% endif %}" alt="{{ product.name }}" width="600" height="600">
+          {% endwith %}
+        </div>
+        {% if product.images.count > 1 %}
+        <div class="product-gallery-thumbs">
+          {% for image in product.images.all %}
+            <img data-gallery-thumb data-full-src="{{ image.image.url }}" src="{{ image.image.url }}" alt="{{ image.display_alt }}" loading="lazy" width="72" height="72" class="{% if forloop.first %}active{% endif %}">
+          {% endfor %}
+        </div>
+        {% endif %}
+      </div>
+
+      <div class="reveal">
+        <span class="product-category">{{ product.category.name }}{% if product.brand %} · {{ product.brand.name }}{% endif %}</span>
+        <h1>{{ product.name }}</h1>
+        {% if product.requires_prescription %}<p class="badge-rx" style="position:static; display:inline-block;">نیازمند نسخه پزشک</p>{% endif %}
+        {% if product.short_description %}<p>{{ product.short_description }}</p>{% endif %}
+
+        <div class="product-price-row" style="margin-bottom: var(--space-4);">
+          <div>
+            {% if product.compare_at_price %}<span class="price-compare">{{ product.compare_at_price|floatformat:0 }} تومان</span>{% endif %}
+            <span class="price" style="font-size:1.5rem">{{ product.price|floatformat:0 }} تومان</span>
+          </div>
+        </div>
+
+        {% if product.in_stock %}
+          <form method="post" action="{% url 'orders:cart_add' product.id %}" data-cart-action="add" data-success-message="{{ product.name }} به سبد خرید اضافه شد." style="display:flex; gap: var(--space-3); align-items:center;">
+            {% csrf_token %}
+            <div class="quantity-stepper">
+              <button type="button" data-step="down" aria-label="کاهش تعداد">−</button>
+              <input type="number" name="quantity" value="1" min="1" max="{{ product.stock }}" inputmode="numeric">
+              <button type="button" data-step="up" aria-label="افزایش تعداد">+</button>
+            </div>
+            <button type="submit" class="btn btn-primary">افزودن به سبد خرید</button>
+          </form>
+        {% else %}
+          <p class="out-of-stock">این محصول در حال حاضر ناموجود است.</p>
+        {% endif %}
+
+        {% if product.description %}
+          <h2 style="margin-top: var(--space-8);">توضیحات</h2>
+          <p>{{ product.description|linebreaksbr }}</p>
+        {% endif %}
+        {% if product.usage_instructions %}
+          <h2>نحوه مصرف</h2>
+          <p>{{ product.usage_instructions|linebreaksbr }}</p>
+        {% endif %}
+        {% if product.side_effects %}
+          <h2>عوارض جانبی</h2>
+          <p>{{ product.side_effects|linebreaksbr }}</p>
+        {% endif %}
+      </div>
+    </div>
+
+    {% if related_products %}
+    <section class="section">
+      <div class="section-head"><h2 class="reveal">محصولات مرتبط</h2></div>
+      <div class="grid">
+        {% for product in related_products %}
+          {% include "partials/product_card.html" %}
+        {% endfor %}
+      </div>
+    </section>
+    {% endif %}
+  </div>
+{% endblock %}

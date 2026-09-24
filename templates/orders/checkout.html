@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container section">
+    <h1 class="reveal">تسویه حساب</h1>
+    <div class="hero-grid" style="align-items:flex-start; gap: var(--space-8);">
+      <form method="post" enctype="multipart/form-data" class="card reveal">
+        {% csrf_token %}
+        <h2>اطلاعات ارسال</h2>
+        {% for field in form %}
+          <div class="form-field">
+            <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+            {{ field }}
+            {% if field.name == "prescription_image" %}
+              <small style="color:var(--color-text-muted)">در صورت وجود داروی نیازمند نسخه در سبد خرید، تصویر نسخه را بارگذاری کنید.</small>
+            {% endif %}
+            {% if field.errors %}<div class="form-errors">{{ field.errors|striptags }}</div>{% endif %}
+          </div>
+        {% endfor %}
+        {% if form.non_field_errors %}<div class="form-errors">{{ form.non_field_errors|striptags }}</div>{% endif %}
+        <button type="submit" class="btn btn-primary btn-block">پرداخت و ثبت سفارش</button>
+      </form>
+
+      <aside class="card cart-summary reveal">
+        <h2>خلاصه سفارش</h2>
+        {% for entry in cart %}
+          <div class="summary-row"><span>{{ entry.product.name }} × {{ entry.quantity }}</span><span>{{ entry.line_total|floatformat:0 }} تومان</span></div>
+        {% endfor %}
+        <div class="summary-row"><span>هزینه ارسال</span><span>{{ shipping_cost|floatformat:0 }} تومان</span></div>
+        <div class="summary-row total"><span>مبلغ قابل پرداخت</span><span>{{ cart.subtotal|add:shipping_cost|floatformat:0 }} تومان</span></div>
+      </aside>
+    </div>
+  </div>
+{% endblock %}

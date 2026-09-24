@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% block content %}
+  <div class="container section">
+    <h1 class="reveal">سفارش‌های من</h1>
+    {% if orders %}
+      <div class="card reveal">
+        {% for order in orders %}
+          <div style="display:flex; justify-content:space-between; align-items:center; padding: var(--space-3) 0; border-bottom: 1px solid var(--color-border);">
+            <div>
+              <a href="{% url 'orders:order_detail' order.pk %}"><strong>سفارش #{{ order.pk }}</strong></a>
+              <p style="margin:0;color:var(--color-text-muted)">{{ order.created_at|date:"Y/m/d" }} — {{ order.get_status_display }}</p>
+            </div>
+            <strong>{{ order.total|floatformat:0 }} تومان</strong>
+          </div>
+        {% endfor %}
+      </div>
+    {% else %}
+      <div class="empty-state"><p>هنوز سفارشی ثبت نکرده‌اید.</p></div>
+    {% endif %}
+  </div>
+{% endblock %}
