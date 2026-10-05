@@ -7,7 +7,7 @@
       {% if image %}
         <img src="{{ image.image.url }}" alt="{{ image.display_alt }}" loading="lazy" width="400" height="300">
       {% else %}
-        <img src="{% static 'img/placeholder-product.svg' %}" alt="{{ product.name }}" loading="lazy" width="400" height="300">
+        <img src="{% static placeholder|default:'img/placeholder-product.svg' %}" alt="{{ product.name }}" loading="lazy" width="400" height="300">
       {% endif %}
     {% endwith %}
   </a>

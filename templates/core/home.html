@@ -1,77 +1,210 @@
 {% extends "base.html" %}
 {% load static %}
 
+{% block body_class %}page-home{% endblock %}
 {% block nav_home_current %}aria-current="page"{% endblock %}
 
+{% block extra_head %}
+  <link rel="preload" href="{% static 'fonts/ElMessiri-Bold.woff2' %}" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="{% static 'css/home.css' %}">
+{% endblock %}
+
 {% block content %}
-  <section class="hero">
-    <div class="container hero-grid">
-      <div>
-        <span class="hero-eyebrow reveal">✔ داروخانه دارای مجوز رسمی</span>
-        <h1 class="reveal">سلامت شما، اولویت ماست</h1>
-        <p class="hero-lede reveal">خرید آنلاین دارو، مکمل و لوازم بهداشتی با مشاوره داروساز، ارسال سریع و ضمانت اصالت کالا از {{ SITE_NAME }}.</p>
-        <div class="hero-cta reveal">
-          <a href="{% url 'catalog:product_list' %}" class="btn btn-primary">مشاهده محصولات</a>
-          <a href="{% url 'core:contact' %}" class="btn btn-outline">مشاوره با داروساز</a>
-        </div>
-        <div class="hero-stats reveal">
-          <div class="hero-stat"><strong>+۱۵٬۰۰۰</strong><span>مشتری راضی</span></div>
-          <div class="hero-stat"><strong>+۲٬۰۰۰</strong><span>قلم دارو و مکمل</span></div>
-          <div class="hero-stat"><strong>۲۴/۷</strong><span>پشتیبانی آنلاین</span></div>
+  {% comment %}
+    Paracetamol, skeletal formula — drawn behind the glass so the frosting has crisp detail to blur.
+    The ring is centred at (288, 200); home.css positions the drawing by that point.
+  {% endcomment %}
+  <svg class="visually-hidden" aria-hidden="true" focusable="false">
+    <symbol id="mol-paracetamol" viewBox="48 88 392 180">
+      <path fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" vector-effect="non-scaling-stroke"
+            d="M228 200L258 251.96L318 251.96L348 200L318 148.04L258 148.04Z
+               M268.8 242.96L307.2 242.96M334.81 195.15L315.61 161.89M260.39 161.89L241.19 195.15
+               M348 200L388 200M228 200L176 200M161 196L116.04 170L64.08 200
+               M120.54 170L120.54 120M111.54 170L111.54 120"/>
+      <g fill="currentColor" font-family="Vazirmatn, sans-serif" font-size="13" font-weight="400" direction="ltr">
+        <text x="392" y="204.6" text-anchor="start">OH</text>
+        <text x="168" y="204.6" text-anchor="middle">N</text>
+        <text x="168" y="219" text-anchor="middle">H</text>
+        <text x="116.04" y="113.6" text-anchor="middle">O</text>
+      </g>
+    </symbol>
+  </svg>
+
+  <section class="home-hero" data-hero aria-labelledby="home-hero-title">
+    <div class="container home-hero-grid">
+      <div class="home-hero-copy">
+        <h1 id="home-hero-title" class="home-hero-title">
+          <span>داروخانه‌ای که</span>
+          <span>به خانه‌تان می‌آید</span>
+        </h1>
+        <p class="home-hero-lede">خرید آنلاین دارو، مکمل و لوازم بهداشتی با مشاوره داروساز، ارسال سریع و ضمانت اصالت کالا.</p>
+
+        <form class="home-search" action="{% url 'core:search' %}" method="get" role="search">
+          <label for="home-search-input" class="visually-hidden">جستجوی دارو یا محصول</label>
+          <svg class="home-search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true" focusable="false"><circle cx="11" cy="11" r="6.5"/><path d="M20 20l-4.2-4.2"/></svg>
+          <input id="home-search-input" type="search" name="q" placeholder="نام دارو، برند یا دسته" autocomplete="off" enterkeyhint="search">
+          <button type="submit" class="home-search-btn">جستجو</button>
+        </form>
+
+        <div class="home-hero-actions">
+          <a href="{% url 'catalog:product_list' %}" class="btn btn-gold">مشاهده محصولات</a>
+          <a href="{% url 'core:contact' %}" class="btn btn-glass">مشاوره با داروساز</a>
         </div>
       </div>
-      <div class="hero-art reveal" aria-hidden="true">
-        <svg width="60%" viewBox="0 0 64 64" fill="none"><path d="M32 8v48M8 32h48" stroke="#fff" stroke-width="8" stroke-linecap="round"/></svg>
+
+      <div class="home-hero-visual">
+        <div class="capsule-stage" aria-hidden="true">
+          <div class="home-molecule">
+            <svg focusable="false"><use href="#mol-paracetamol"/></svg>
+          </div>
+
+          <div class="capsule-wrap">
+            <div class="capsule">
+              <div class="capsule-half capsule-clear">
+                <svg class="capsule-beads" viewBox="0 0 246 170" focusable="false">
+                  <defs>
+                    <radialGradient id="bead-gold" cx="35%" cy="30%" r="70%"><stop offset="0" stop-color="#fff6cf"/><stop offset=".45" stop-color="#e7bd52"/><stop offset="1" stop-color="#9a6d14"/></radialGradient>
+                    <radialGradient id="bead-pearl" cx="35%" cy="30%" r="70%"><stop offset="0" stop-color="#ffffff"/><stop offset=".5" stop-color="#e6f2ec"/><stop offset="1" stop-color="#8fada2"/></radialGradient>
+                    <radialGradient id="bead-em" cx="35%" cy="30%" r="70%"><stop offset="0" stop-color="#bdf3da"/><stop offset=".45" stop-color="#1fa77a"/><stop offset="1" stop-color="#06523c"/></radialGradient>
+                  </defs>
+                  <circle cx="42.0" cy="142.5" r="7.8" fill="url(#bead-em)"/>
+                  <circle cx="60.0" cy="151.5" r="8.8" fill="url(#bead-em)"/>
+                  <circle cx="78.0" cy="156.0" r="8.6" fill="url(#bead-gold)"/>
+                  <circle cx="30.0" cy="130.5" r="7.5" fill="url(#bead-em)"/>
+                  <circle cx="21.0" cy="115.5" r="8.5" fill="url(#bead-pearl)"/>
+                  <circle cx="100.5" cy="156.0" r="7.4" fill="url(#bead-gold)"/>
+                  <circle cx="57.0" cy="133.5" r="8.2" fill="url(#bead-em)"/>
+                  <circle cx="73.5" cy="139.5" r="7.5" fill="url(#bead-gold)"/>
+                  <circle cx="43.5" cy="120.0" r="7.2" fill="url(#bead-gold)"/>
+                  <circle cx="90.0" cy="142.5" r="7.3" fill="url(#bead-gold)"/>
+                  <circle cx="15.0" cy="97.5" r="7.6" fill="url(#bead-gold)"/>
+                  <circle cx="124.5" cy="156.0" r="9.0" fill="url(#bead-gold)"/>
+                  <circle cx="36.0" cy="103.5" r="8.1" fill="url(#bead-pearl)"/>
+                  <circle cx="67.5" cy="120.0" r="7.9" fill="url(#bead-pearl)"/>
+                  <circle cx="112.5" cy="142.5" r="7.8" fill="url(#bead-em)"/>
+                  <circle cx="85.5" cy="127.5" r="7.2" fill="url(#bead-pearl)"/>
+                  <circle cx="142.5" cy="156.0" r="7.4" fill="url(#bead-em)"/>
+                  <circle cx="52.5" cy="106.5" r="7.8" fill="url(#bead-pearl)"/>
+                  <circle cx="102.0" cy="129.0" r="7.3" fill="url(#bead-pearl)"/>
+                  <circle cx="159.0" cy="156.0" r="7.5" fill="url(#bead-em)"/>
+                  <circle cx="28.5" cy="85.5" r="7.7" fill="url(#bead-pearl)"/>
+                  <circle cx="133.5" cy="139.5" r="8.8" fill="url(#bead-pearl)"/>
+                  <circle cx="15.0" cy="75.0" r="7.8" fill="url(#bead-em)"/>
+                  <circle cx="70.5" cy="103.5" r="7.4" fill="url(#bead-em)"/>
+                  <circle cx="94.5" cy="114.0" r="7.2" fill="url(#bead-gold)"/>
+                  <circle cx="48.0" cy="90.0" r="7.6" fill="url(#bead-pearl)"/>
+                  <circle cx="175.5" cy="153.0" r="8.4" fill="url(#bead-pearl)"/>
+                  <circle cx="120.0" cy="124.5" r="10.2" fill="url(#bead-gold)"/>
+                  <circle cx="151.5" cy="141.0" r="7.4" fill="url(#bead-pearl)"/>
+                  <circle cx="64.5" cy="88.5" r="7.9" fill="url(#bead-pearl)"/>
+                  <circle cx="193.5" cy="156.0" r="8.2" fill="url(#bead-em)"/>
+                  <circle cx="40.5" cy="73.5" r="8.2" fill="url(#bead-pearl)"/>
+                  <circle cx="87.0" cy="99.0" r="8.7" fill="url(#bead-gold)"/>
+                  <circle cx="19.5" cy="58.5" r="7.6" fill="url(#bead-gold)"/>
+                  <circle cx="111.0" cy="108.0" r="7.7" fill="url(#bead-gold)"/>
+                  <circle cx="144.0" cy="126.0" r="7.4" fill="url(#bead-gold)"/>
+                </svg>
+              </div>
+              <div class="capsule-half capsule-gold"></div>
+              <div class="capsule-shine"></div>
+            </div>
+          </div>
+        </div>
+
+        <ul class="home-badges">
+          <li class="home-badge home-badge-licensed">
+            <span class="home-badge-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false"><path d="M12 3l7 3v5.5c0 4.5-3 7.8-7 9.5-4-1.7-7-5-7-9.5V6z"/><path d="M9 12l2 2 4-4.5"/></svg>
+            </span>
+            داروخانه دارای مجوز رسمی
+          </li>
+          <li class="home-badge home-badge-authentic">
+            <span class="home-badge-icon" aria-hidden="true">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" focusable="false"><circle cx="12" cy="9.5" r="5.5"/><path d="M9 14.4L7.5 21l4.5-2.2 4.5 2.2-1.5-6.6"/><path d="M10 9.5l1.5 1.5 2.7-2.9"/></svg>
+            </span>
+            ضمانت اصالت کالا
+          </li>
+        </ul>
       </div>
     </div>
   </section>
 
   {% if categories %}
-  <section class="section">
+  <section class="home-section home-categories" aria-labelledby="home-categories-title">
     <div class="container">
-      <div class="section-head">
-        <h2 class="reveal">دسته‌بندی محصولات</h2>
+      <div class="home-section-head">
+        <h2 id="home-categories-title">دسته‌بندی محصولات</h2>
       </div>
-      <div class="category-grid">
+      <ul class="cat-grid">
         {% for category in categories %}
-          <a href="{{ category.get_absolute_url }}" class="category-card reveal">
-            <span class="category-card-icon" aria-hidden="true">💊</span>
-            <span>{{ category.name }}</span>
-          </a>
+          <li>
+            <a href="{{ category.get_absolute_url }}" class="cat-tile">
+              <span class="cat-icon" aria-hidden="true">{% include "partials/category_icon.html" %}</span>
+              <span class="cat-name">{{ category.name }}</span>
+              <svg class="cat-arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.5 6l-6 6 6 6"/></svg>
+            </a>
+          </li>
         {% endfor %}
-      </div>
+      </ul>
     </div>
   </section>
   {% endif %}
 
   {% if featured_products %}
-  <section class="section">
+  <section class="home-section home-products" aria-labelledby="home-featured-title">
     <div class="container">
-      <div class="section-head">
-        <h2 class="reveal">محصولات ویژه</h2>
-        <a href="{% url 'catalog:product_list' %}" class="btn btn-ghost">مشاهده همه ←</a>
+      <div class="home-section-head">
+        <h2 id="home-featured-title">محصولات ویژه</h2>
+        <a href="{% url 'catalog:product_list' %}" class="home-link">
+          مشاهده همه محصولات
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M14.5 6l-6 6 6 6"/></svg>
+        </a>
       </div>
       <div class="grid">
         {% for product in featured_products %}
-          {% include "partials/product_card.html" %}
+          {% include "partials/product_card.html" with placeholder="img/placeholder-product-glass.svg" %}
         {% endfor %}
       </div>
     </div>
   </section>
   {% endif %}
 
+  <section class="consult" aria-labelledby="home-consult-title">
+    <div class="consult-stage">
+      <div class="consult-molecule" aria-hidden="true">
+        <svg focusable="false"><use href="#mol-paracetamol"/></svg>
+      </div>
+      <div class="container">
+        <div class="consult-panel">
+          <h2 id="home-consult-title">پیش از خرید، از داروساز بپرسید</h2>
+          <p>درباره دوز مصرف، تداخل دارویی یا انتخاب مکمل مناسب سؤال دارید؟ داروسازان ما رایگان راهنمایی‌تان می‌کنند.</p>
+          <div class="consult-actions">
+            <a href="{% url 'core:contact' %}" class="btn btn-gold">پرسش از داروساز</a>
+            {% if site_settings.phone_number %}
+              <a href="tel:{{ site_settings.phone_number }}" class="btn btn-glass">تماس: <span dir="ltr">{{ site_settings.phone_number }}</span></a>
+            {% endif %}
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   {% if new_products %}
-  <section class="section">
+  <section class="home-section home-products home-products-new" aria-labelledby="home-new-title">
     <div class="container">
-      <div class="section-head">
-        <h2 class="reveal">جدیدترین محصولات</h2>
+      <div class="home-section-head">
+        <h2 id="home-new-title">جدیدترین محصولات</h2>
       </div>
       <div class="grid">
         {% for product in new_products %}
-          {% include "partials/product_card.html" %}
+          {% include "partials/product_card.html" with placeholder="img/placeholder-product-glass.svg" %}
         {% endfor %}
       </div>
     </div>
   </section>
   {% endif %}
+{% endblock %}
+
+{% block extra_js %}
+  <script src="{% static 'js/home.js' %}" defer></script>
 {% endblock %}

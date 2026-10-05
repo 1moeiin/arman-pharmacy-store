@@ -1,0 +1,9 @@
+{% if category.image %}<img src="{{ category.image.url }}" alt="" loading="lazy" width="56" height="56">
+{% else %}<svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" focusable="false">
+{% if "بدون نسخه" in category.name %}<g transform="rotate(-45 12 12)"><rect x="2.5" y="8.5" width="19" height="7" rx="3.5"/><path d="M12 8.5v7"/></g>
+{% elif "نسخه" in category.name %}<path d="M6.5 3h8l3.5 3.5V21H6.5z"/><path d="M14.5 3v3.5H18"/><path d="M9.5 16.5v-6h2.2a1.8 1.8 0 0 1 0 3.6H9.5M11 14.1l3.5 3.4M12.4 17.5l2-2"/>
+{% elif "ورزش" in category.name %}<rect x="4.5" y="7" width="3" height="10" rx="1"/><rect x="16.5" y="7" width="3" height="10" rx="1"/><path d="M7.5 12h9M2.5 10v4M21.5 10v4"/>
+{% elif "مکمل" in category.name or "ویتامین" in category.name %}<rect x="6" y="8" width="12" height="13" rx="2.5"/><path d="M7.5 3.5h9V8h-9z"/><path d="M9.5 13h5M9.5 16h3"/>
+{% elif "آرایش" in category.name or "بهداشت" in category.name or "پوست" in category.name %}<path d="M8 10.5h8v9a1.5 1.5 0 0 1-1.5 1.5h-5A1.5 1.5 0 0 1 8 19.5z"/><path d="M10 10.5V8h4v2.5M12 8V5H8.5M12 5h1.5M10.5 14.5h3"/>
+{% else %}<g transform="rotate(-45 12 12)"><rect x="2.5" y="8.5" width="19" height="7" rx="3.5"/><path d="M12 8.5v7"/></g>
+{% endif %}</svg>{% endif %}
